@@ -1,72 +1,66 @@
+// UnorderedArray.java
+// COSC 251 Assignment 1
+// Implements an unsorted array with basic operations
+
 public class UnorderedArray {
     private Integer[] arr;
-    private int size;
+    private int count; // number of valid elements
 
-    // initialize the array
-    public UnorderedArray(int capacity) {
-        if (capacity <= 0) {
-            throw new IllegalArgumentException("Capacity must be greater than zero");
-        }
-        arr = new Integer[capacity];
-        size = 0;
+    // Constructor
+    public UnorderedArray(int size) {
+        if (size <= 0) throw new IllegalArgumentException("Size must be positive.");
+        arr = new Integer[size];
+        count = 0;
     }
 
-    // Inserts an integer into the array (O(1) on average)
+    // Insert: O(1)
     public void insert(int x) {
-        // Check if the array is full, double its size if true
-        if (size == arr.length) {
-            resize(arr.length * 2);
-        }
-        arr[size++] = x; // Insert at the current spot then increment the size
-    }
-    // Deletes an integer from the array if it exists and returns true, otherwise returns false (O(n) complexity)
-    public boolean delete(int x) {
-        for (int i = 0; i < size; i++) {
-            if (arr[i] == x) {
-                arr[i] = arr[--size]; // Swap the deleted element with the last element
-                arr[size] = null; // Clear the deleted element's reference
-                return true;
-            }
-        }
-        return false;
+        if (count >= arr.length) resize(arr.length * 2); // expand if full
+        arr[count++] = x;
     }
 
-    // Searches for an integer in the array and returns its index, or -1 if it does not exist (O(n) complexity)
+    // Delete: O(n)
+    public boolean delete(int x) {
+        int index = find(x);
+        if (index == -1) return false;
+        arr[index] = arr[count - 1]; // replace with last element
+        arr[count - 1] = null; 
+        count--;
+        return true;
+    }
+
+    // Find: O(n)
     public int find(int x) {
-        for (int i = 0; i < size; i++) {
-            if (arr[i] == x) {
-                return i;
-            }
+        for (int i = 0; i < count; i++) {
+            if (arr[i] != null && arr[i] == x) return i;
         }
         return -1;
     }
-    
-    // Returns the integer at the given index (O(1) complexity)
+
+    // Get: O(1)
     public int get(int index) {
-        if (index >= 0 && index < size) {
-            return arr[index];
+        if (index < 0 || index >= count) {
+            throw new IndexOutOfBoundsException("Invalid index: " + index);
         }
-        throw new IndexOutOfBoundsException("Index out of bounds");
+        return arr[index];
     }
 
-    // Returns the current size of the array (O(1) complexity)
+    // Size: O(1)
     public int size() {
-        return size;
+        return count;
     }
 
-    // Resizes the array to the given new size (O(n) complexity)
+    // Resize: O(n)
     public void resize(int newSize) {
-        if (newSize <= 0) {
-            throw new IllegalArgumentException("New size must be greater than zero");
-        }
-        // Create a new array with the new size
+        if (newSize <= 0) throw new IllegalArgumentException("New size must be positive.");
         Integer[] newArr = new Integer[newSize];
-        // Copy elements to the new array
-        System.arraycopy(arr, 0, newArr, 0, Math.min(size, newSize));
-        arr = newArr;
-        // Adjust the size to the new size if the new size is smaller than the current size
-        if (newSize < size) {
-            size = newSize;
+        int elementsToCopy = Math.min(count, newSize);
+        for (int i = 0; i < elementsToCopy; i++) {
+            newArr[i] = arr[i];
         }
+        arr = newArr;
+        count = elementsToCopy;
     }
 }
+
+// Note: This implementation uses Integer objects to allow null values for empty slots.
