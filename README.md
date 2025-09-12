@@ -1,4 +1,4 @@
-Assignment 1 in Data Structure Class
-Projects:
+# Assignment 1 in Data Structure Class
+**Projects:**
 - UnorderedArray
 - OrderedArray
