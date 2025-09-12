@@ -62,5 +62,3 @@ public class UnorderedArray {
         count = elementsToCopy;
     }
 }
-
-// Note: This implementation uses Integer objects to allow null values for empty slots.
