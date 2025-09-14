@@ -1,38 +1,50 @@
-// UnorderedArray.java
+// OrderedArray.java
 // COSC 251 Assignment 1
-// Implements an unsorted array with basic operations
+// Implements a sorted array with basic operations + error handling
 
-public class UnorderedArray {
+public class OrderedArray {
     private Integer[] arr;
     private int count; // number of valid elements
 
     // Constructor
-    public UnorderedArray(int size) {
+    public OrderedArray(int size) {
         if (size <= 0) throw new IllegalArgumentException("Size must be positive.");
         arr = new Integer[size];
         count = 0;
     }
 
-    // Insert: O(1)
+    // Insert (keeps array sorted): O(n)
     public void insert(int x) {
-        if (count >= arr.length) resize(arr.length * 2); // expand if full
-        arr[count++] = x;
+        if (count >= arr.length) resize(arr.length * 2); // expand automatically
+        int i;
+        for (i = count - 1; i >= 0 && arr[i] > x; i--) {
+            arr[i + 1] = arr[i];
+        }
+        arr[i + 1] = x;
+        count++;
     }
 
     // Delete: O(n)
     public boolean delete(int x) {
         int index = find(x);
-        if (index == -1) return false;
-        arr[index] = arr[count - 1]; // replace with last element
-        arr[count - 1] = null; 
+        if (index == -1) return false; // not found
+        for (int i = index; i < count - 1; i++) {
+            arr[i] = arr[i + 1];
+        }
+        arr[count - 1] = null;
         count--;
         return true;
     }
 
-    // Find: O(n)
+    // Find (binary search): O(log n)
     public int find(int x) {
-        for (int i = 0; i < count; i++) {
-            if (arr[i] != null && arr[i] == x) return i;
+        if (count == 0) return -1; // handle empty array
+        int left = 0, right = count - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (arr[mid] == x) return mid;
+            if (arr[mid] < x) left = mid + 1;
+            else right = mid - 1;
         }
         return -1;
     }
