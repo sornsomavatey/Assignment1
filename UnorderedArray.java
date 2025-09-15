@@ -61,4 +61,22 @@ public class UnorderedArray {
         arr = newArr;
         count = elementsToCopy;
     }
+
+    // Optional Method: Display O(n)
+    public void display() {
+        if (count == 0) {
+            System.out.println("[]");       // prints empty brackets
+            return;
+        }
+        System.out.print("[");
+        for (int i = 0; i < count; i++) {
+            System.out.print(arr[i]);
+            if (i < count - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println("]");
+    }
+
+
 }
